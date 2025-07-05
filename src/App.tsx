@@ -15,6 +15,8 @@ import {
 import { ToastContext } from "./contexts/toast"
 import { WelcomeScreen } from "./components/WelcomeScreen"
 import { SettingsDialog } from "./components/Settings/SettingsDialog"
+import { ModeSelector, AppMode } from "./components/ModeSelector/ModeSelector"
+import { LiveInterviewMode } from "./components/LiveInterview/LiveInterviewMode"
 
 // Create a React Query client
 const queryClient = new QueryClient({
@@ -44,8 +46,7 @@ function App() {
   const [isInitialized, setIsInitialized] = useState(false)
   const [hasApiKey, setHasApiKey] = useState(false)
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false)
-  // Note: Model selection is now handled via separate extraction/solution/debugging model settings
-
+  const [currentMode, setCurrentMode] = useState<AppMode>('coding')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   // Set unlimited credits
@@ -83,7 +84,7 @@ function App() {
     []
   )
 
-  // Check for OpenAI API key and prompt if not found
+  // Check for API key and prompt if not found
   useEffect(() => {
     const checkApiKey = async () => {
       try {
@@ -165,9 +166,6 @@ function App() {
           updateLanguage("python")
         }
         
-        // Model settings are now managed through the settings dialog
-        // and stored in config as extractionModel, solutionModel, and debuggingModel
-        
         markInitialized()
       } catch (error) {
         console.error("Failed to initialize app:", error)
@@ -183,7 +181,7 @@ function App() {
     const onApiKeyInvalid = () => {
       showToast(
         "API Key Invalid",
-        "Your OpenAI API key appears to be invalid or has insufficient credits",
+        "Your API key appears to be invalid or has insufficient credits",
         "error"
       )
       setApiKeyDialogOpen(true)
@@ -236,6 +234,26 @@ function App() {
     }
   }, [showToast])
 
+  // Handle mode changes
+  const handleModeChange = useCallback((mode: AppMode) => {
+    setCurrentMode(mode);
+    
+    // Update window dimensions based on mode
+    if (mode === 'live-interview') {
+      // Larger window for live interview mode
+      window.electronAPI.updateContentDimensions({
+        width: 1200,
+        height: 800
+      });
+    } else {
+      // Standard size for coding mode
+      window.electronAPI.updateContentDimensions({
+        width: 800,
+        height: 600
+      });
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
@@ -243,11 +261,27 @@ function App() {
           <div className="relative">
             {isInitialized ? (
               hasApiKey ? (
-                <SubscribedApp
-                  credits={credits}
-                  currentLanguage={currentLanguage}
-                  setLanguage={updateLanguage}
-                />
+                <div className="min-h-screen bg-black">
+                  {/* Mode Selector */}
+                  <ModeSelector 
+                    currentMode={currentMode}
+                    onModeChange={handleModeChange}
+                  />
+                  
+                  {/* Main Content */}
+                  {currentMode === 'coding' ? (
+                    <SubscribedApp
+                      credits={credits}
+                      currentLanguage={currentLanguage}
+                      setLanguage={updateLanguage}
+                    />
+                  ) : (
+                    <LiveInterviewMode
+                      currentLanguage={currentLanguage}
+                      setLanguage={updateLanguage}
+                    />
+                  )}
+                </div>
               ) : (
                 <WelcomeScreen onOpenSettings={handleOpenSettings} />
               )

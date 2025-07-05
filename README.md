@@ -1,4 +1,4 @@
-# CodeInterviewAssist
+# CodeInterviewAssist - Enhanced with Live Interview Mode
 
 > ## ⚠️ IMPORTANT NOTICE TO THE COMMUNITY ⚠️
 > 
@@ -16,18 +16,30 @@
 
 > ## 🔑 API KEY INFORMATION - UPDATED
 >
-> We have tested and confirmed that **both Gemini and OpenAI APIs work properly** with the current version. If you are experiencing issues with your API keys:
+> We have tested and confirmed that **both Gemini and OpenAI APIs work properly** with the current version. **Gemini 2.0 Flash is now the recommended choice for Live Interview Mode** due to its superior real-time audio processing capabilities.
+>
+> If you are experiencing issues with your API keys:
 >
 > - Try deleting your API key entry from the config file located in your user data directory
 > - Log out and log back in to the application
 > - Check your API key dashboard to verify the key is active and has sufficient credits
-> - Ensure you're using the correct API key format (OpenAI keys start with "sk-")
+> - Ensure you're using the correct API key format (OpenAI keys start with "sk-", Gemini keys are alphanumeric)
 >
 > The configuration file is stored at: `C:\Users\[USERNAME]\AppData\Roaming\interview-coder-v1\config.json` (on Windows) or `/Users/[USERNAME]/Library/Application Support/interview-coder-v1/config.json` (on macOS)
 
 ## Free, Open-Source AI-Powered Interview Preparation Tool
 
-This project provides a powerful alternative to premium coding interview platforms. It delivers the core functionality of paid interview preparation tools but in a free, open-source package. Using your own OpenAI API key, you get access to advanced features like AI-powered problem analysis, solution generation, and debugging assistance - all running locally on your machine.
+This project provides a powerful alternative to premium coding interview platforms. It delivers the core functionality of paid interview preparation tools but in a free, open-source package. Using your own API key, you get access to advanced features like AI-powered problem analysis, solution generation, debugging assistance, and **real-time live interview support** - all running locally on your machine.
+
+### 🆕 NEW: Live Interview Mode
+
+**Experience real-time AI assistance during live interviews!**
+
+- **🎤 Live Audio Processing**: Uses WebRTC MediaRecorder API for seamless audio capture
+- **🧠 Real-time AI Responses**: Powered by Gemini 2.0 Flash for instant transcription and answer generation
+- **👁️ Optional Screen Capture**: Automatic screenshot capture during processing
+- **🔇 Stealth Operation**: Minimal UI distractions, designed for discrete use
+- **⚡ Fast Response Times**: Optimized for real-time interview scenarios
 
 ### Why This Exists
 
@@ -38,11 +50,26 @@ The best coding interview tools are often behind expensive paywalls, making them
 - Make customizations to suit your specific needs
 - Learn from and contribute to an open-source tool
 
+### Two Powerful Modes
+
+#### 📸 Coding Mode (Original)
+- Take screenshots of coding problems
+- AI-powered problem analysis and solution generation
+- Detailed explanations with time/space complexity analysis
+- Real-time debugging assistance
+
+#### 🎤 Live Interview Mode (NEW)
+- Real-time audio transcription during interviews
+- Instant AI-generated responses and suggestions
+- Supports both technical and behavioral questions
+- Optional automatic screen capture
+- Minimal, stealth-friendly interface
+
 ### Customization Possibilities
 
 The codebase is designed to be adaptable:
 
-- **AI Models**: Though currently using OpenAI's models, you can modify the code to integrate with other providers like Claude, Deepseek, Llama, or any model with an API. All integration code is in `electron/ProcessingHelper.ts` and UI settings are in `src/components/Settings/SettingsDialog.tsx`.
+- **AI Models**: Though currently using OpenAI and Gemini models, you can modify the code to integrate with other providers like Claude, Deepseek, Llama, or any model with an API. All integration code is in `electron/ProcessingHelper.ts` and UI settings are in `src/components/Settings/SettingsDialog.tsx`.
 - **Languages**: Add support for additional programming languages
 - **Features**: Extend the functionality with new capabilities 
 - **UI**: Customize the interface to your preferences
@@ -51,14 +78,24 @@ All it takes is modest JavaScript/TypeScript knowledge and understanding of the 
 
 ## Features
 
+### Core Features
 - 🎯 99% Invisibility: Undetectable window that bypasses most screen capture methods
 - 📸 Smart Screenshot Capture: Capture both question text and code separately for better analysis
-- 🤖 AI-Powered Analysis: Automatically extracts and analyzes coding problems using GPT-4o
+- 🤖 AI-Powered Analysis: Automatically extracts and analyzes coding problems using advanced AI models
 - 💡 Solution Generation: Get detailed explanations and solutions with time/space complexity analysis
 - 🔧 Real-time Debugging: Debug your code with AI assistance and structured feedback
 - 🎨 Advanced Window Management: Freely move, resize, change opacity, and zoom the window
-- 🔄 Model Selection: Choose between GPT-4o and GPT-4o-mini for different processing stages
-- 🔒 Privacy-Focused: Your API key and data never leave your computer except for OpenAI API calls
+- 🔄 Model Selection: Choose between multiple AI providers and models for different processing stages
+- 🔒 Privacy-Focused: Your API key and data never leave your computer except for API calls
+
+### Live Interview Mode Features
+- 🎤 **Real-time Audio Capture**: Uses browser's native WebRTC MediaRecorder API
+- 🧠 **Instant AI Processing**: Powered by Gemini 2.0 Flash for real-time transcription and response generation
+- 📊 **Audio Level Monitoring**: Visual feedback for microphone input levels
+- ⚙️ **Configurable Settings**: Adjust sensitivity, chunk duration, and auto-screenshot preferences
+- 📱 **Responsive Interface**: Clean, minimal UI designed for stealth operation
+- 🔄 **Response History**: Keep track of recent questions and AI responses
+- 📸 **Optional Screen Capture**: Automatic screenshot capture during audio processing
 
 ## Global Commands
 
@@ -96,16 +133,18 @@ Note: The application is **NOT** invisible to:
 
 - Node.js (v16 or higher)
 - npm or bun package manager
-- OpenAI API Key
+- API Key (OpenAI or **Gemini recommended for Live Interview Mode**)
 - Screen Recording Permission for Terminal/IDE
+- **Microphone Permission for Live Interview Mode**
   - On macOS:
-    1. Go to System Preferences > Security & Privacy > Privacy > Screen Recording
-    2. Ensure that CodeInterviewAssist has screen recording permission enabled
+    1. Go to System Preferences > Security & Privacy > Privacy > Microphone
+    2. Ensure that CodeInterviewAssist has microphone access enabled
     3. Restart CodeInterviewAssist after enabling permissions
   - On Windows:
-    - No additional permissions needed
+    - Go to Settings > Privacy > Microphone
+    - Enable microphone access for desktop apps
   - On Linux:
-    - May require `xhost` access depending on your distribution
+    - May require additional audio permissions depending on your distribution
 
 ## Running the Application
 
@@ -180,7 +219,9 @@ The packaged applications will be available in the `release` directory.
 
 - **Window Manager Compatibility**: Some window management tools (like Rectangle Pro on macOS) may interfere with the app's window movement. Consider disabling them temporarily.
 
-- **API Usage**: Be mindful of your OpenAI API key's rate limits and credit usage. Vision API calls are more expensive than text-only calls.
+- **API Usage**: Be mindful of your API key's rate limits and credit usage. Vision API calls are more expensive than text-only calls.
+
+- **Live Interview Mode**: Requires microphone permissions and works best with Gemini 2.0 Flash for optimal real-time performance.
 
 - **LLM Customization**: You can easily customize the app to include LLMs like Claude, Deepseek, or Grok by modifying the API calls in `ProcessingHelper.ts` and related UI components.
 
@@ -189,6 +230,7 @@ The packaged applications will be available in the `release` directory.
   - Use Ctrl+B/Cmd+B multiple times if the window doesn't appear
   - Adjust window opacity with Ctrl+[/]/Cmd+[/] if needed
   - For macOS: ensure script has execute permissions (`chmod +x stealth-run.sh`)
+  - For Live Interview Mode: ensure microphone permissions are granted
 
 ## Comparison with Paid Interview Tools
 
@@ -197,6 +239,8 @@ The packaged applications will be available in the `release` directory.
 | Price | $60/month subscription | Free (only pay for your API usage) |
 | Solution Generation | ✅ | ✅ |
 | Debugging Assistance | ✅ | ✅ |
+| **Live Audio Processing** | ✅ | ✅ **NEW** |
+| **Real-time AI Responses** | ✅ | ✅ **NEW** |
 | Invisibility | ✅ | ✅ |
 | Multi-language Support | ✅ | ✅ |
 | Time/Space Complexity Analysis | ✅ | ✅ |
@@ -205,7 +249,7 @@ The packaged applications will be available in the `release` directory.
 | Payment Processing | Required | None (Use your own API key) |
 | Privacy | Server-processed | 100% Local Processing |
 | Customization | Limited | Full Source Code Access |
-| Model Selection | Limited | Choice Between Models |
+| Model Selection | Limited | Choice Between Multiple Providers |
 
 ## Tech Stack
 
@@ -215,25 +259,30 @@ The packaged applications will be available in the `release` directory.
 - Vite
 - Tailwind CSS
 - Radix UI Components
+- **WebRTC MediaRecorder API** (for Live Interview Mode)
 - OpenAI API
+- **Gemini 2.0 Flash API** (recommended for Live Interview Mode)
+- Anthropic Claude API
 
 ## How It Works
 
+### Coding Mode (Original)
+
 1. **Initial Setup**
    - Launch the invisible window
-   - Enter your OpenAI API key in the settings
+   - Enter your API key in the settings
    - Choose your preferred model for extraction, solution generation, and debugging
 
 2. **Capturing Problem**
    - Use global shortcut [Control or Cmd + H] to take screenshots of code problems
-   - Screenshots are automatically added to the queue of up to 2
+   - Screenshots are automatically added to the queue of up to 5
    - If needed, remove the last screenshot with [Control or Cmd + L]
 
 3. **Processing**
    - Press [Control or Cmd + Enter] to analyze the screenshots
-   - AI extracts problem requirements from the screenshots using GPT-4 Vision API
+   - AI extracts problem requirements from the screenshots using Vision API
    - The model generates an optimal solution based on the extracted information
-   - All analysis is done using your personal OpenAI API key
+   - All analysis is done using your personal API key
 
 4. **Solution & Debugging**
    - View the generated solutions with detailed explanations
@@ -241,38 +290,43 @@ The packaged applications will be available in the `release` directory.
    - Get structured analysis with identified issues, corrections, and optimizations
    - Toggle between solutions and queue views as needed
 
-5. **Window Management**
-   - Move window using [Control or Cmd + Arrow keys]
-   - Toggle visibility with [Control or Cmd + B]
-   - Adjust opacity with [Control or Cmd + [] and [Control or Cmd + ]]
-   - Window remains invisible to specified screen sharing applications
-   - Start a new problem using [Control or Cmd + R]
+### Live Interview Mode (NEW)
 
-6. **Language Selection
+1. **Setup**
+   - Switch to Live Interview Mode using the mode selector
+   - Ensure microphone permissions are granted
+   - **Gemini 2.0 Flash is recommended** for optimal performance
 
-   - Easily switch between programming languages with a single click
-   - Use arrow keys for keyboard navigation through available languages
-   - The system dynamically adapts to any languages added or removed from the codebase
-   - Your language preference is saved between sessions
+2. **Live Listening**
+   - Click the microphone button to start live audio capture
+   - Audio is processed in configurable chunks (default: 3 seconds)
+   - Real-time audio level monitoring provides visual feedback
 
-## Adding More AI Models
+3. **AI Processing**
+   - Audio chunks are sent directly to Gemini 2.0 Flash
+   - AI handles both transcription and response generation in one step
+   - Responses appear in real-time with confidence scores
 
-This application is built with extensibility in mind. You can easily add support for additional LLMs alongside the existing OpenAI integration:
+4. **Response Display**
+   - Current question transcription is highlighted
+   - AI responses include both technical and behavioral guidance
+   - Response history is maintained for the session
+   - Optional automatic screenshot capture during processing
 
-- You can add Claude, Deepseek, Grok, or any other AI model as alternative options
-- The application architecture allows for multiple LLM backends to coexist
-- Users can have the freedom to choose their preferred AI provider
-
-To add new models, simply extend the API integration in `electron/ProcessingHelper.ts` and add the corresponding UI options in `src/components/Settings/SettingsDialog.tsx`. The modular design makes this straightforward without disrupting existing functionality.
+5. **Stealth Operation**
+   - Minimal UI designed for discrete use during interviews
+   - Global shortcuts work in both modes
+   - Window can be hidden/shown instantly with Ctrl+B/Cmd+B
 
 ## Configuration
 
-- **OpenAI API Key**: Your personal API key is stored locally and only used for API calls to OpenAI
-- **Model Selection**: You can choose between GPT-4o and GPT-4o-mini for each stage of processing:
-  - Problem Extraction: Analyzes screenshots to understand the coding problem
-  - Solution Generation: Creates optimized solutions with explanations
-  - Debugging: Provides detailed analysis of errors and improvement suggestions
+- **API Key**: Your personal API key is stored locally and only used for API calls
+- **Model Selection**: Choose between different AI providers and models:
+  - **OpenAI**: GPT-4o and GPT-4o-mini
+  - **Gemini**: Gemini 1.5 Pro and **Gemini 2.0 Flash** (recommended for Live Interview Mode)
+  - **Anthropic**: Claude 3.7 Sonnet, Claude 3.5 Sonnet, and Claude 3 Opus
 - **Language**: Select your preferred programming language for solutions
+- **Live Interview Settings**: Configure audio sensitivity, chunk duration, and auto-screenshot preferences
 - **Window Controls**: Adjust opacity, position, and zoom level using keyboard shortcuts
 - **All settings are stored locally** in your user data directory and persist between sessions
 

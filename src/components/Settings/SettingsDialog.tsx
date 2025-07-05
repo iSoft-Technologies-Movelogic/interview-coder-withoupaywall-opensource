@@ -57,7 +57,7 @@ const modelCategories: ModelCategory[] = [
       {
         id: "gemini-2.0-flash",
         name: "Gemini 2.0 Flash",
-        description: "Faster, more cost-effective option"
+        description: "Faster, more cost-effective option (Required for Live Interview Mode)"
       }
     ],
     anthropicModels: [
@@ -103,7 +103,7 @@ const modelCategories: ModelCategory[] = [
       {
         id: "gemini-2.0-flash",
         name: "Gemini 2.0 Flash",
-        description: "Faster, more cost-effective option"
+        description: "Faster, more cost-effective option (Required for Live Interview Mode)"
       }
     ],
     anthropicModels: [
@@ -149,7 +149,7 @@ const modelCategories: ModelCategory[] = [
       {
         id: "gemini-2.0-flash",
         name: "Gemini 2.0 Flash",
-        description: "Faster, more cost-effective option"
+        description: "Faster, more cost-effective option (Required for Live Interview Mode)"
       }
     ],
     anthropicModels: [
@@ -180,10 +180,10 @@ interface SettingsDialogProps {
 export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDialogProps) {
   const [open, setOpen] = useState(externalOpen || false);
   const [apiKey, setApiKey] = useState("");
-  const [apiProvider, setApiProvider] = useState<APIProvider>("openai");
-  const [extractionModel, setExtractionModel] = useState("gpt-4o");
-  const [solutionModel, setSolutionModel] = useState("gpt-4o");
-  const [debuggingModel, setDebuggingModel] = useState("gpt-4o");
+  const [apiProvider, setApiProvider] = useState<APIProvider>("gemini"); // Changed default to Gemini
+  const [extractionModel, setExtractionModel] = useState("gemini-2.0-flash");
+  const [solutionModel, setSolutionModel] = useState("gemini-2.0-flash");
+  const [debuggingModel, setDebuggingModel] = useState("gemini-2.0-flash");
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
 
@@ -219,10 +219,10 @@ export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDia
         .getConfig()
         .then((config: Config) => {
           setApiKey(config.apiKey || "");
-          setApiProvider(config.apiProvider || "openai");
-          setExtractionModel(config.extractionModel || "gpt-4o");
-          setSolutionModel(config.solutionModel || "gpt-4o");
-          setDebuggingModel(config.debuggingModel || "gpt-4o");
+          setApiProvider(config.apiProvider || "gemini"); // Changed default to Gemini
+          setExtractionModel(config.extractionModel || "gemini-2.0-flash");
+          setSolutionModel(config.solutionModel || "gemini-2.0-flash");
+          setDebuggingModel(config.debuggingModel || "gemini-2.0-flash");
         })
         .catch((error: unknown) => {
           console.error("Failed to load config:", error);
@@ -244,9 +244,9 @@ export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDia
       setSolutionModel("gpt-4o");
       setDebuggingModel("gpt-4o");
     } else if (provider === "gemini") {
-      setExtractionModel("gemini-1.5-pro");
-      setSolutionModel("gemini-1.5-pro");
-      setDebuggingModel("gemini-1.5-pro");
+      setExtractionModel("gemini-2.0-flash");
+      setSolutionModel("gemini-2.0-flash");
+      setDebuggingModel("gemini-2.0-flash");
     } else if (provider === "anthropic") {
       setExtractionModel("claude-3-7-sonnet-20250219");
       setSolutionModel("claude-3-7-sonnet-20250219");
@@ -318,7 +318,7 @@ export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDia
         <DialogHeader>
           <DialogTitle>API Settings</DialogTitle>
           <DialogDescription className="text-white/70">
-            Configure your API key and model preferences. You'll need your own API key to use this application.
+            Configure your API key and model preferences. <strong>Gemini 2.0 Flash is required for Live Interview Mode.</strong>
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -362,7 +362,7 @@ export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDia
                   />
                   <div className="flex flex-col">
                     <p className="font-medium text-white text-sm">Gemini</p>
-                    <p className="text-xs text-white/60">Gemini 1.5 models</p>
+                    <p className="text-xs text-green-400">Recommended for Live Mode</p>
                   </div>
                 </div>
               </div>
@@ -413,7 +413,7 @@ export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDia
               </p>
             )}
             <p className="text-xs text-white/50">
-              Your API key is stored locally and never sent to any server except {apiProvider === "openai" ? "OpenAI" : "Google"}
+              Your API key is stored locally and never sent to any server except {apiProvider === "openai" ? "OpenAI" : apiProvider === "gemini" ? "Google" : "Anthropic"}
             </p>
             <div className="mt-2 p-2 rounded-md bg-white/5 border border-white/10">
               <p className="text-xs text-white/80 mb-1">Don't have an API key?</p>
@@ -456,6 +456,17 @@ export function SettingsDialog({ open: externalOpen, onOpenChange }: SettingsDia
               )}
             </div>
           </div>
+
+          {/* Live Interview Mode Notice */}
+          {apiProvider !== "gemini" && (
+            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+              <p className="text-xs text-yellow-400 font-medium mb-1">⚠️ Live Interview Mode Notice</p>
+              <p className="text-xs text-yellow-300">
+                Live Interview Mode requires Gemini 2.0 Flash for real-time audio processing. 
+                Switch to Gemini to use this feature.
+              </p>
+            </div>
+          )}
           
           <div className="space-y-2 mt-4">
             <label className="text-sm font-medium text-white mb-2 block">Keyboard Shortcuts</label>
